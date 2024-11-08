@@ -78,6 +78,9 @@ for line in config_file.readlines():
   git_process = subprocess.Popen("git clone " + line, cwd = os.getcwd(), shell = True, 
      stdout = subprocess.PIPE, stderr = subprocess.PIPE )
   (stdout_data, stderr_data) = git_process.communicate()
+  # Decode the byte data to strings
+  stdout_str = stdout_data.decode('utf-8')
+  stderr_str = stderr_data.decode('utf-8')
 
   # Git prints all status messages to stderr (!). We check its retval 
   # to see if it performed correctly, and halt the program (giving debug 
@@ -86,8 +89,8 @@ for line in config_file.readlines():
     print("Done!")
   else:
     print("*** Error checking out repo. Git returned status code" + str( git_process.returncode))
-    print("*** Git messages on stdout: '" + stdout_data + "'.")
-    print("*** Git messages on stderr: '" + stderr_data + "'.")
+    print("*** Git messages on stdout: '" + stdout_str + "'.")
+    print("*** Git messages on stderr: '" + stderr_str + "'.")
     print()
     if not ignore_git_errors:
       print("""Since the skip-mode is off, these errors need to be fixed before the build process can proceed. In 
